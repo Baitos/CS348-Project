@@ -1,0 +1,4 @@
+Database Design
+Trainer(trainer_id, name, username, team, level)
+Gym(gym_id, name, location, exists)
+GoldGym(trainer_id, gym_id, victories, time, berries)
