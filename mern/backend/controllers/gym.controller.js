@@ -15,7 +15,7 @@ export const createGym = async (req,res) => {
     console.log("Received data:", req.body); // Debugging log
 
     const gym = req.body; // user will send a gym
-    if (!gym.name || !gym.location) {
+    if (!gym.name || !gym.location || !gym.username) {
         return res.status(400).json({ success:false, message: "Please provide all fields"});
     }
     const newGym = new Gym(gym);
@@ -59,3 +59,19 @@ export const deleteGym = async (req, res) => {
         res.status(500).json({success: false, message: "Server Error"}); 
     }
 };
+
+export const searchGyms = async (req, res) => {
+    const { username, location, team, name } = req.query;
+    const query = {};
+    if (username) query.username = { $regex: username, $options: 'i' };
+    if (location) query.location = { $regex: location, $options: 'i' };
+    if (name) query.name = { $regex: name, $options: 'i' }; 
+
+    try {
+        const gyms = await Gym.find(query);
+        res.status(200).json({ success: true, data: gyms });
+    } catch (error) {
+        console.error("Error in searching gyms:", error.message);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+}

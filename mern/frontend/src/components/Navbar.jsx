@@ -1,12 +1,36 @@
 import { Button, Container, Flex, HStack, Text, useColorMode, useColorModeValue } from "@chakra-ui/react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import { PlusSquareIcon, CheckCircleIcon } from "@chakra-ui/icons";
 import { IoMoon } from "react-icons/io5";
 import { LuSun } from "react-icons/lu";
+import { signInTrainer } from "../list/trainerSignIn";
+import { useEffect } from "react";
+
 
 const Navbar = () => {
+    const { currentTrainer, logOut } = signInTrainer(); 
+    useEffect(() => {
+      console.log("CurrentTrainer is:", currentTrainer);
+    }, [currentTrainer]);
+    const navigate = useNavigate(); 
     const { colorMode, toggleColorMode } = useColorMode();
+    const handleLogout = () => {
+      logOut();
+      navigate("/");
+    };
+
+    let usernameColor = "grey";
+    if (currentTrainer) {
+      if (currentTrainer.team.toLowerCase() == 'mystic') {
+        usernameColor = "blue";
+      }
+      else if (currentTrainer.team.toLowerCase() == 'instinct') {
+        usernameColor = "yellow";
+      }
+      else if (currentTrainer.team.toLowerCase() == 'valor') {
+        usernameColor = "red";
+      }
+    }
 
     return <Container maxW={"1140px"} px={4} >
       <Flex
@@ -26,22 +50,23 @@ const Navbar = () => {
           bgGradient='linear(to-r, #FFD700, #FFC107, #FFB300)'
           bgClip={"text"}
         >
-          <Link to={"/"}>Pogo Gym DB</Link>
+          <Text>Pogo Gold Gym Database</Text>
         </Text>
 
         <HStack
           spacing={2}
           alignItems={"center"}>
-          <Link to={"/create"}>
-						<Button>
-							<PlusSquareIcon fontSize={20} />
-						</Button>
-					</Link>
-          <Link to={"/view"}>
-						<Button>
-							<CheckCircleIcon fontSize={20} />
-						</Button>
-					</Link>
+          {currentTrainer ? (
+            <>
+              <Text fontSize="sm" color={usernameColor}><strong>{currentTrainer.username + ", " + currentTrainer.level}</strong></Text>
+              <Button size="sm" colorScheme="red" onClick={handleLogout}>
+                Log Out
+              </Button>
+            </>
+          ) : (
+            <Text fontSize="sm">Not signed in</Text>
+          )}
+
 					<Button onClick={toggleColorMode}>
 						{colorMode === "light" ? <IoMoon /> : <LuSun size='20' />}
 					</Button>

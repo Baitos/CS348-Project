@@ -9,9 +9,6 @@ const CreatePage = () => {
         <Button colorScheme="red" onClick={() => navigate("/create/gym")}>
           Add a Gym
         </Button>
-        <Button colorScheme="yellow" onClick={() => navigate("/create/trainer")}>
-          Add a Trainer
-        </Button>
       </VStack>
     );
   };
